@@ -45,7 +45,7 @@
       const miFormulario = document.getElementById("my-form");
       const misMensajes = document.getElementById("misMensajes");
 
-      const socket = io("http://localhost:3001");
+      const socket = io("https://minichat-socket-server.onrender.com");
 
       miFormulario.addEventListener("submit", (e) => {
         e.preventDefault();
