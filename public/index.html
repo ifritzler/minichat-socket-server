@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+    />
+    <title>Socket server basics</title>
+  </head>
+  <body class="container">
+    <h1 class="mt-5">Minichat</h1>
+    <hr />
+
+    <form id="my-form">
+      <div class="row">
+        <div class="col-8">
+          <input
+            type="text"
+            id="txtMensaje"
+            name="message"
+            placeholder="Aqui su mensaje..."
+            class="form-control"
+          />
+        </div>
+        <div class="col-4">
+          <button class="btn btn-primary w-100">Enviar</button>
+        </div>
+      </div>
+    </form>
+
+    <div class="row mt-2">
+      <div class="col">
+        <ul
+          class="list-group list-group-flush col-12 gap-2"
+          id="misMensajes"
+        ></ul>
+      </div>
+    </div>
+
+    <script src="../socket.io/socket.io.js"></script>
+    <script>
+      const miFormulario = document.getElementById("my-form");
+      const misMensajes = document.getElementById("misMensajes");
+
+      const socket = io("http://localhost:3001");
+
+      miFormulario.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const formInstance = e.target;
+        const data = Object.fromEntries(new FormData(formInstance).entries());
+
+        if (data.message === "") return;
+        const newMessageItem = document.createElement("li");
+
+        newMessageItem.className =
+          "list-group-item list-group-item-info rounded col-sm-5 col-8 ms-auto";
+        newMessageItem.innerText = data.message;
+        misMensajes.appendChild(newMessageItem);
+
+        socket.emit("CLIENT_MESSAGE", data);
+        formInstance.reset();
+      });
+
+      socket.on("RECEIVED_MESSAGE", (data) => {
+        const newMessageItem = document.createElement("li");
+
+        newMessageItem.className =
+          "list-group-item list-group-item-secondary rounded col-sm-5 col-8";
+        newMessageItem.innerText = data.message;
+        misMensajes.appendChild(newMessageItem);
+      });
+    </script>
+  </body>
+</html>
