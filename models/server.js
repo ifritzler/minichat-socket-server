@@ -23,6 +23,12 @@ class Server {
     this.app.use(express.static(path.resolve(__dirname, "../public")));
   }
 
+  initRoutes() {
+    this.app.get("/", (req, res) => {
+      res.sendFile(path.resolve(__dirname, "../public/index.html"));
+    });
+  }
+
   execute() {
     this.middlewares();
     this.socketsConfig();
